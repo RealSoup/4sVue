@@ -1,2 +1,5 @@
 [core]
 	autocrlf = true
+[user]
+	email = kjk@4science.net
+	name = jin guk
