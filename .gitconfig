@@ -1,5 +1,6 @@
 [core]
 	autocrlf = true
+	excludesFile = D:/Atom-local-git/4sVue/.gitignore
 [user]
 	email = kjk@4science.net
 	name = jin guk
