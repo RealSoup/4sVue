@@ -6,7 +6,8 @@ import Pic02 from '@/views/web/page/Pic02';
 
 import Main from '@/views/web/Main';
 import Login from '@/views/web/auth/Login';
-import Board from '@/views/web/board/List';
+
+import Board from '@/views/web/board/Index';
 import BoCreate from '@/views/web/board/Create';
 
 
@@ -16,6 +17,7 @@ import BoCreate from '@/views/web/board/Create';
 
 
 Vue.use(Router)
+// export default new Router({
 export default new Router({
     mode: 'history',
     base: process.env.APP_URL,
@@ -29,7 +31,7 @@ export default new Router({
             component: Login
         }, {
             path: '/pic01',
-            name: 'img01',
+            name: 'pic01',
             component: Pic01
         }, {
             path: '/pic02',

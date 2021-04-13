@@ -5,6 +5,7 @@ import VueCookies from 'vue-cookies'
 Vue.use(VueCookies)
 import auth from './auth'
 import error from './error';
+import board from './board';
 
 
 export default new Vuex.Store({
@@ -19,6 +20,7 @@ export default new Vuex.Store({
     },
     modules: {
         auth,
+        board,
         error
     }
 });

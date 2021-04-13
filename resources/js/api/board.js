@@ -10,3 +10,8 @@ export async function store(bo_subject, bo_content) {
         console.log(res);
     }
 }
+
+
+export function index(bo_cd) {
+    return http.get('/api/board/'+bo_cd);
+}

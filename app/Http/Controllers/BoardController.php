@@ -39,9 +39,18 @@ class BoardController extends Controller {
                 ->where('bo_group', 0)
                 ->orderByRaw('bo_seq, bo_seq_cd');
         $bo = $bo->paginate($this->param['row']);
-// dd($bo);
+        foreach ($bo as $key => $val) {
+            if($val->created_at->format('Y')<now()->format('Y'))
+                $val->bo_date = $val->created_at->format('y-m-d');
+            elseif($val->created_at->format('Y-m-d')<now()->format('Y-m-d'))
+                $val->bo_date = $val->created_at->format('m-d');
+            else
+                $val->bo_date = $val->created_at->format('H:i');
+        }
+        $this->param['list'] = $bo;
+
         // return view("layouts.app", $bo);
-        return response()->json($bo);
+        return response()->json($this->param);
 
     }
 

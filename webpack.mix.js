@@ -15,4 +15,4 @@ mix.js('resources/js/app.js', 'public/js')
 
 
 
-mix.browserSync ( 'https://dev4s.run.goorm.io/');
+mix.browserSync ( '127.0.0.1:8000');

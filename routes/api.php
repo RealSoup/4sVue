@@ -19,7 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::group(['middleware' => ['auth:api'], 'prefix' => 'board/{bo_cd}'], function(){
+Route::group(['middleware' => ['api'], 'prefix' => 'board/{bo_cd}'], function(){
 
     // Route::get('', [BoardController::class, 'index'])->name('board.index');
     Route::get('', 'BoardController@index')->name('board.index')->where('bo_cd', '[a-zA-Z0-9_]+');
