@@ -1,18 +1,18 @@
 <template>
-<header id="header" class="container">
+<div class="container">
     <b-navbar toggleable="lg" type="dark" variant="info">
         <b-navbar-brand href="/">NavBar</b-navbar-brand>
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
         <b-collapse id="nav-collapse" is-nav>
-            <b-navbar-nav>
+            <ul class="navbar-nav mr-auto">
                 <b-nav-item :to="{name: 'pic01'}" active-class="active" exact>이런페이지</b-nav-item>
                 <b-nav-item :to="{name: 'pic02'}" active-class="active" exact>저런페이지</b-nav-item>
-                <b-nav-item :to="{name: 'board', params: { bo_cd:'normal' }}" active-class="active" exact>게시판</b-nav-item>
+                <b-nav-item :to="{name: 'bo_index', params: { bo_cd:'normal' }}" active-class="active" exact>게시판</b-nav-item>
                 <b-nav-item :to="{name: 'bo_create', params: { bo_cd:'normal' }}" active-class="active" exact>게시판 글쓰기</b-nav-item>
                 <b-nav-item href="#" disabled>Disabled</b-nav-item>
-            </b-navbar-nav>
+            </ul>
 
             <!-- Right aligned nav items -->
             <b-navbar-nav class="ml-auto">
@@ -44,7 +44,7 @@
             </b-navbar-nav>
         </b-collapse>
     </b-navbar>
-</header>
+</div>
 </template>
 
 <script>

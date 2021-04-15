@@ -7,7 +7,8 @@ import Pic02 from '@/views/web/page/Pic02';
 import Main from '@/views/web/Main';
 import Login from '@/views/web/auth/Login';
 
-import Board from '@/views/web/board/Index';
+import BoIndex from '@/views/web/board/Index';
+import BoShow from '@/views/web/board/Show';
 import BoCreate from '@/views/web/board/Create';
 
 
@@ -39,9 +40,13 @@ export default new Router({
             component: Pic02
         }, {
             path: '/board/:bo_cd',
-            name: 'board',
-            component: Board
+            name: 'bo_index',
+            component: BoIndex
             // component:() => import('./web/board/List.vue')
+        }, {
+            path: '/board/:bo_cd/show/:bo_id',
+            name: 'bo_show',
+            component: BoShow
         }, {
             path: '/board/:bo_cd/create',
             name: 'bo_create',

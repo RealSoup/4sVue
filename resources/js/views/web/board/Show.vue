@@ -26,46 +26,48 @@
     </div>
 </template>
 <script>
-import * as boardApi from '@/api/board';
-import { mapState } from 'vuex';
+import http from '@/api/http';
 export default {
     data() {
         return {
+            bo_nm:'',
             bo_cd:this.$route.params.bo_cd,
-            error: null,
+            bo_id:this.$route.params.bo_id,
+            post: null,
+            loading: true,
         };
     },
     // created() {
     //     this.fetchData();
     // },
     computed: {
-        ...mapState('board', ['data', 'loading']),
+        // ...mapState('board', ['data', 'loading']),
 
 
     },
     methods: {
-        show() {
-            this.$store.dispatch('board/show', { bo_cd:this.$route.params.bo_cd, bo_id });
-        },
-        dateForm(date) {
-            return comApi.dateForm(date);
-        },
+        async getPost() {
+            try {
+                await http.get('/api/board/'+this.bo_cd+'/show/'+bo_id).then(res => {
+                    console.log(res.data);
+                    if (res.status === 200) {
+                        this.bo_nm = res.data.bo_nm;
+                        this.post = res.data;
+                        this.loading = false;
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
 
-            // axios
-            //     .get('/api/board/normal')
-            //     .then(response => {
-            //         this.loading = false;
-            //         this.lists = response.data.data;
-            //         console.log(response.data);
-            //     }).catch(error => {
-            //         this.loading = false;
-            //         this.error = error.response.data.message || error.message;
-            //         console.log(456);
-            //     });
+
+            } catch (e) {
+                alert(e.response.data.error);
+            }
+        },
 
     },
     mounted() {
-        this.index();
+        this.getPost();
     },
 }
 </script>

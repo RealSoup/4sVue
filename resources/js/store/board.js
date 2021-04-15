@@ -2,7 +2,7 @@ import * as boardApi from '@/api/board';
 export default {
     namespaced: true,
     state: {
-        data: {},
+        list: {},
         loading: true
     },
     getters:{

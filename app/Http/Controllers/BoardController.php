@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Board;
+use Illuminate\Database\Eloquent\Builder;
 use DB;
 use Illuminate\Support\Arr;
 use App\Http\Requests\StoreBoard;
@@ -18,13 +19,13 @@ class BoardController extends Controller {
         $this->board = $board;
         $this->board->setTableName($req->bo_cd);
         $this->param['bo_cd'] = $req->bo_cd;
-        cache(['board' => config('board.'.$req->bo_cd)?:['name'=> '일반', 'row'=>10, 'is_thumb'=>true]]);
+        cache(['board' => config('board.'.$req->bo_cd)?:['name'=> '일반 게시판', 'row'=>10, 'is_thumb'=>true]]);
         $this->param['bo_nm'] = cache('board')['name'];
         $this->param['row'] = cache('board')['row'];
         $this->param['is_thumb'] = cache('board')['is_thumb'];
         $this->param['upload_path'] = 'storage/board/'.$req->bo_cd;
     }
-    public function index() {
+    public function index(Request $req) {
         // $bo = $this->board
         //         ->where('bo_group', 0)
         //         ->orderByRaw('bo_seq, bo_seq_cd');
@@ -38,7 +39,27 @@ class BoardController extends Controller {
         $bo = $this->board
                 ->where('bo_group', 0)
                 ->orderByRaw('bo_seq, bo_seq_cd');
+
+        if ($req->filled('sch_txt')) {
+/*            $orders = $orders->where(function($query) use ($params){
+                        $query->SchOd_no($params['sch_text'])->orWhere(function (Builder $query) use ($params) {
+                            $query->SchWriter(User::SchName($params['sch_text'])->pluck('id'));
+                        })->orWhere(function (Builder $query) use ($params) {
+                            $query->SchOd_addr($params['sch_text']);
+                        })->orWhere(function (Builder $query) use ($params) {
+                            $query->SchOd_hp($params['sch_text']);
+                        });
+                    });*/
+            $sch_txt = trim($req->sch_txt);
+            $bo = $bo->where(function (Builder $query) use ($sch_txt) {
+                        $query->where('bo_subject', 'like', "%".$sch_txt."%")
+                            ->orWhere('bo_content', 'like', "%".$sch_txt."%")
+                            ->orWhere('bo_writer', 'like', "%".$sch_txt."%");
+                    });
+        }
+        // echo_query($bo);
         $bo = $bo->paginate($this->param['row']);
+
         foreach ($bo as $key => $val) {
             if($val->created_at->format('Y')<now()->format('Y'))
                 $val->bo_date = $val->created_at->format('y-m-d');
@@ -47,7 +68,8 @@ class BoardController extends Controller {
             else
                 $val->bo_date = $val->created_at->format('H:i');
         }
-        $this->param['list'] = $bo;
+
+        $this->param['board'] = $bo;
 
         // return view("layouts.app", $bo);
         return response()->json($this->param);
