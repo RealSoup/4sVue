@@ -95,7 +95,7 @@ class BoardController extends Controller {
         public function create($bo_cd, $bo_papa_id=null) {
             $this->param['act_type'] = 'create';
             $this->param['bo_papa_id'] = $bo_papa_id;
-            return view("web.board.$bo_cd.form", $this->param);
+            return response()->json($this->param);
         }
 
         public function store(StoreBoard $req, $bo_cd) {
@@ -103,7 +103,7 @@ class BoardController extends Controller {
             else if ($req->wri_type == 'reply') $pieces = $this->re_reqImplant($req);
             else                                $pieces = ['bo_seq' => ($this->board->min('bo_seq'))-1];
             $pieces = Arr::collapse([$this->bo_reqImplant($req), $pieces]);
-            $pieces = Arr::collapse([['created_id' => auth()->user()->id ], $pieces]);
+            $pieces = Arr::collapse([['created_id' => auth()->guard('api')->user()->id ], $pieces]);
             $bo_id = $this->board->insertGetId($pieces);    //  가공된 자료DB insert
             $this->fiKeySet($req, $bo_id);  //  업로드된 파일 게시판 키 입력
             if ($req->wri_type == 'comment') {
@@ -156,7 +156,7 @@ class BoardController extends Controller {
         }
 
         public function update(Request $req, $bo_cd, $bo_id) {
-            $pieces = ['updated_id' => auth()->user()->id, 'updated_at' => now()];
+            $pieces = ['updated_id' => auth()->guard('api')->user()->id, 'updated_at' => now()];
             $pieces = Arr::collapse([$this->bo_reqImplant($req), $pieces]);
             $this->board->where('bo_id', $bo_id)->update($pieces);
             $this->fiKeySet($req, $bo_id);
@@ -209,7 +209,7 @@ class BoardController extends Controller {
 
         public function bo_reqImplant($req) {
             return [
-                'bo_writer'  => auth()->user()->name,
+                'bo_writer'  => auth()->guard('api')->user()->name,
                 'bo_subject' => $req->filled('bo_subject') ? $req->bo_subject : '',
                 'bo_content' => $req->filled('bo_content') ? $req->bo_content : '',
                 'ip'         => $req->ip()
@@ -217,10 +217,12 @@ class BoardController extends Controller {
         }
 
         public function fiKeySet($req, $bo_id) {
+            dd($req->all());
             if ($req->filled('fi_id')){
     			foreach ($req->fi_id as $fi_id) {
     				$finfo = FileInfo::findOrFail($fi_id);
     				$finfo->fi_key	= $bo_id;
+                    dump($finfo);
     				$finfo->save();
     			}
     		}
@@ -229,7 +231,7 @@ class BoardController extends Controller {
         public function goodBad($bo_cd, $bo_id, $type) {
             $good = DB::table('board_good')->where([    ['bg_table', $bo_cd],
                                                         ['bg_bo_id', $bo_id],
-                                                        ['created_id', auth()->user()->id]  ])->first();
+                                                        ['created_id', auth()->guard('api')->user()->id]  ])->first();
             // dump($good);
             if ($type == 'GOOD' || $type == 'BAD') {
                 if ($good) {
@@ -239,7 +241,7 @@ class BoardController extends Controller {
                     DB::table('board_good')->insert([   'bg_table' => $bo_cd,
                                                         'bg_bo_id' => $bo_id,
                                                         'bg_type' => ($type=='GOOD')?'GOOD':'BAD',
-                                                        'created_id' => auth()->user()->id ]);
+                                                        'created_id' => auth()->guard('api')->user()->id ]);
                     event(new Point("goodbad", 'up'));
                     return response()->json("success", 200);
                 }
@@ -248,11 +250,11 @@ class BoardController extends Controller {
                 if ($type == 'reverse'){
                     $this->board->where('bo_id', $bo_id)->increment(($good->bg_type=='GOOD')?'bo_bad':'bo_good');
                     DB::table('board_good')
-                        ->where([ ['bg_table', $bo_cd], ['bg_bo_id', $bo_id], ['created_id', auth()->user()->id] ])
+                        ->where([ ['bg_table', $bo_cd], ['bg_bo_id', $bo_id], ['created_id', auth()->guard('api')->user()->id] ])
                         ->update( ['bg_type' => ($good->bg_type=='GOOD')?'BAD':'GOOD'] );
                 } else {
                     DB::table('board_good')
-                        ->where([ ['bg_table', $bo_cd], ['bg_bo_id', $bo_id], ['created_id', auth()->user()->id] ])
+                        ->where([ ['bg_table', $bo_cd], ['bg_bo_id', $bo_id], ['created_id', auth()->guard('api')->user()->id] ])
                         ->delete();
                     event(new Point("goodbad", 'dn'));
                 }

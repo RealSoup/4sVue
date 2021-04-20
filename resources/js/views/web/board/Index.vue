@@ -59,7 +59,14 @@
                 <tr v-else><td colspan="4" class="text-center"><b-alert variant="danger" show>No Item</b-alert></td></tr>
             </tbody>
         </table>
-
+        <div class="row">
+            <div class="col-6">
+                
+            </div>
+            <div class="col-6 text-right">
+                <router-link :to="{name: 'bo_create', params: { bo_cd:bo_cd }}" class="btn btn-sm btn-primary">글쓰기</router-link>
+            </div>
+        </div>
         <pagination :data="bo_data" align="center" @pagination-change-page="setPage"></pagination>
     </div>
 </template>

@@ -19,7 +19,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::group(['middleware' => ['api'], 'prefix' => 'board/{bo_cd}'], function(){
+
+
+Route::group(['prefix' => 'board/{bo_cd}'], function(){
 
     // Route::get('', [BoardController::class, 'index'])->name('board.index');
     Route::get('', 'BoardController@index')->name('board.index')->where('bo_cd', '[a-zA-Z0-9_]+');
@@ -31,4 +33,9 @@ Route::group(['middleware' => ['api'], 'prefix' => 'board/{bo_cd}'], function(){
     Route::delete('destroy/{bo_id}', 'BoardController@destroy')->name('board.destroy')->where('bo_cd', '[a-zA-Z0-9_]+');
 
     Route::GET('goodBad/{bo_id}/{type}', 'BoardController@goodBad')->name('board.goodBad')->where('bo_cd', '[a-zA-Z0-9_]+');
+
 });
+
+Route::post('upload', 'CommonController@upload')->name('upload');
+Route::get('download/{fi_id}', 'CommonController@download')->name('download');
+Route::get('deleteFiles/{fi_id?}', 'CommonController@deleteFiles')->name('deleteFiles');
