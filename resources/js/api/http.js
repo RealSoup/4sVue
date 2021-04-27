@@ -31,7 +31,6 @@ const instance = axios.create({
 )*/
 instance.interceptors.response.use(function (response) {
     store.commit('error/setValidationError', {});
-
     return response;
 }, function (error) {
     if (error.response.status === 422) {
