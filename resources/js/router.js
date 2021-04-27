@@ -7,9 +7,10 @@ import Pic02 from '@/views/web/page/Pic02';
 import Main from '@/views/web/Main';
 import Login from '@/views/web/auth/Login';
 
-import BoIndex from '@/views/web/board/Index';
-import BoShow from '@/views/web/board/Show';
-import BoCreate from '@/views/web/board/Create';
+import BoIndex from     '@/views/web/board/Index';
+import BoShow from      '@/views/web/board/Show';
+import BoCreate from    '@/views/web/board/Create';
+import BoEdit from      '@/views/web/board/Edit';
 
 
 
@@ -51,6 +52,11 @@ export default new Router({
             path: '/board/:bo_cd/create',
             name: 'bo_create',
             component: BoCreate
+            // component:() => import('./web/board/List.vue')
+        }, {
+            path: '/board/:bo_cd/edit/:bo_id',
+            name: 'bo_edit',
+            component: BoEdit
             // component:() => import('./web/board/List.vue')
         },
 

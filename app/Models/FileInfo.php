@@ -16,8 +16,8 @@ class FileInfo extends Model {
 
     public function fileable() { return $this->morphTo(); }
 
-    public function scopeFi_key($query, int $fi_key) { return $query->where('fi_key', $fi_key); }
     public function scopeFi_type($query, string $fi_type) { return $query->where('fi_type', $fi_type); }
+    public function scopeFi_key($query, int $fi_key) { return $query->where('fi_key', $fi_key); }
     public function scopeFi_path($query, string $fi_path) { return $query->where('fi_path', $fi_path); }
 
     public function getSrc($sub=NULL) {

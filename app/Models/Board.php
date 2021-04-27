@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Board extends Model {
     use HasFactory;
@@ -20,8 +21,17 @@ class Board extends Model {
     public function fileInfo_bo() { return $this->fileInfo()->where("fi_path", cache('board')['code']); }
 
     public function scopeSchSubject($query, $txt) { return $query->where('bo_subject', $txt); }
-    public function scopeSchContent($query, $txt) { return $query->where('bo_content', $txt); }    
+    public function scopeSchContent($query, $txt) { return $query->where('bo_content', $txt); }
     public function scopeSchWriter($query, $id) { return $query->where('created_id', $id); }
+
+    public function getCreatedAtAttribute( $value ) {
+        return (new Carbon($value))->format('Y-m-d H:i');
+    }
+
+    public function getBoContentAttribute( $value ) {
+        return nl2br($value);
+    }
+
 
     public function getComment(){
         return $this->where('bo_group', $this->bo_id)->orderByRaw('bo_co_seq, bo_co_seq_cd')->get();

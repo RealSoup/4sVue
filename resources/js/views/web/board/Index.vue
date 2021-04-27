@@ -1,6 +1,6 @@
 <template>
     <div class="bo_index">
-        <h2>{{bo_nm}}</h2>
+        <h2>{{bo_info.bo_nm}}</h2>
         <div class="loading text-center p-5" v-if="loading">
             <b-spinner variant="success" label="Spinning"></b-spinner>
         </div>
@@ -16,7 +16,7 @@
             </div>
 
             <div class="col-md-6">
-                <b-form @submit.prevent="getList" inline ref="form" class="float-right">
+                <b-form @submit.prevent="index" inline ref="form" class="float-right">
                     <div class="input-group input-group-sm">
                         <input type="text" v-model="sch_frm.sch_txt" class="form-control" placeholder="검색어 입력" />
                         <div class="input-group-append">
@@ -50,10 +50,10 @@
                         {{numCalc(idx)}}
                     </th>
                     <td>
-                        <a :href="'/board/'+bo_cd+'/view/'+row.bo_id">{{row.bo_subject}}</a>
+                        <a :href="'/board/'+bo_cd+'/show/'+row.bo_id">{{row.bo_subject}}</a>
                     </td>
                     <td>{{row.bo_writer}}</td>
-                    <td>{{row.bo_date}}</td>
+                    <td>{{ row.created_at | dateFormat }}</td>
                 </tr>
                 </template>
                 <tr v-else><td colspan="4" class="text-center"><b-alert variant="danger" show>No Item</b-alert></td></tr>
@@ -61,7 +61,7 @@
         </table>
         <div class="row">
             <div class="col-6">
-                
+
             </div>
             <div class="col-6 text-right">
                 <router-link :to="{name: 'bo_create', params: { bo_cd:bo_cd }}" class="btn btn-sm btn-primary">글쓰기</router-link>
@@ -74,18 +74,16 @@
 
 import http from '@/api/http';
 import { mapState } from 'vuex';
+import { common } from "@/mixins/common";
 export default {
     data() {
         return {
-            bo_nm:'',
-            bo_data:{},
-            row:10,
             bo_cd:this.$route.params.bo_cd,
             sch_frm:{
                 sch_txt:'',
                 page:0,
             },
-            loading:true,
+            // loading:true,
             error: null,
         }
     },
@@ -94,39 +92,34 @@ export default {
     // },
     computed: {
         // ...mapState('board', ['data', 'loading']),
+        ...mapState('board', ['bo_info', 'loading', 'bo_data']),
 
-
+    },
+    // watch: {
+    //     '$route.params.bo_cd': function (bo_cd) {
+    //         console.log(bo_cd);
+    //         this.index();
+    //     }
+    // },
+    beforeRouteUpdate (to, from, next) {
+        this.bo_cd = to.params.bo_cd;
+        this.index();
+        next();
     },
     methods: {
         setPage(page) {
             this.sch_frm.page = page;
-            this.getList();
+            this.index();
         },
         getFrmQueryString(){
             return Object.keys(this.sch_frm).map(key => key + '=' + this.sch_frm[key]).join('&');
         },
-        async getList(e) {
-            const frmParam = this.getFrmQueryString();
-            try {
-                await http.get('/api/board/'+this.bo_cd+'?' + frmParam).then(res => {
-                    if (res.status === 200) {
-                        this.row = res.data.row;
-                        this.bo_nm = res.data.bo_nm;
-                        this.bo_data = res.data.board;
-                        this.loading = false;
-                        // context.commit('setData', {data:res.data});
-                    }
-                }).catch(function (error) {
-                    console.log(error);
-                });
-
-
-            } catch (e) {
-                alert(e.response.data.error);
-            }
+        index() {
+            const qryString = this.getFrmQueryString();
+            this.$store.dispatch('board/index', { bo_cd:this.bo_cd, qryString:qryString });
         },
         numCalc(i) {
-            return this.bo_data.total - (this.bo_data.current_page - 1) * this.row - i ;
+            return this.bo_data.total - (this.bo_data.current_page - 1) * this.bo_info.row - i ;
         },
 
         // index() {
@@ -148,7 +141,8 @@ export default {
 
     },
     mounted() {
-        this.getList();
+        this.index();
     },
+    mixins:[common],
 }
 </script>

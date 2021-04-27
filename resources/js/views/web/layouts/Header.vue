@@ -16,6 +16,7 @@
                     <template #button-content>
                         <em>게시판</em>
                     </template>
+                    <b-dropdown-item :to="{name: 'bo_index', params: { bo_cd:'notice' }}">공지사항</b-dropdown-item>
                     <b-dropdown-item :to="{name: 'bo_index', params: { bo_cd:'normal' }}">일반게시판</b-dropdown-item>
                     <b-dropdown-item :to="{name: 'bo_index', params: { bo_cd:'photo' }}">포토 게시판</b-dropdown-item>
                 </b-nav-item-dropdown>
@@ -27,7 +28,7 @@
             <b-navbar-nav class="ml-auto">
                 <b-nav-item v-if="is_auth">{{user.name}}</b-nav-item>
                 <b-nav-item-dropdown right v-if="is_auth">
-                
+
                     <!-- Using 'button-content' slot -->
                     <template #button-content>
                         <em>User</em>
