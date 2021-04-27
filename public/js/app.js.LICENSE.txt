@@ -30,3 +30,7 @@ PERFORMANCE OF THIS SOFTWARE.
   * (c) 2020 Abdelrahman Awad
   * @license MIT
   */
+
+//! moment.js
+
+//! moment.js locale configuration
